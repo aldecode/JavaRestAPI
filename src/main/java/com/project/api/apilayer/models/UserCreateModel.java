@@ -1,12 +1,28 @@
 package com.project.api.apilayer.models;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class UserCreateModel {
+    @NotNull
+    @Size(min = 2)
     private String firstName;
+
+    @NotNull
+    @Size(min = 2)
     private String lastName;
+
+    @NotNull
+    @Email
     private String email;
+
+    @NotNull
+    @Size(max = 24)
     private String username;
+
+    @NotNull
+    @Size(min = 8)
     private String password;
 
     public String getFirstName() {
