@@ -3,15 +3,10 @@ package com.project.api.apilayer.models;
 import com.sun.istack.NotNull;
 
 public class UserCreateModel {
-    @NotNull(message = "First name is required")
     private String firstName;
-    @NotNull(message = "Last name is required")
     private String lastName;
-    @NotNull(message = "Email is required")
     private String email;
-    @NotNull(message = "Username is required")
     private String username;
-    @NotNull(message = "Password is required")
     private String password;
 
     public String getFirstName() {
