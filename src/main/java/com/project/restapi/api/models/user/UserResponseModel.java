@@ -1,4 +1,4 @@
-package com.project.restapi.api.models;
+package com.project.restapi.api.models.user;
 
 import java.time.Instant;
 

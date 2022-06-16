@@ -2,6 +2,7 @@ package com.project.restapi.api.advices;
 
 import com.project.restapi.api.models.ErrorResponseModel;
 import com.project.restapi.businesslogic.exceptions.BadRequestException;
+import com.project.restapi.businesslogic.exceptions.ResourceNotFoundException;
 import com.project.restapi.businesslogic.exceptions.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,11 @@ import java.time.Instant;
 @ControllerAdvice
 public class ExceptionHandlingAdvice {
     private final Clock clock = Clock.systemDefaultZone();
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponseModel> handleException(ResourceNotFoundException ex) {
+        return handleException(ex, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponseModel> handleException(UnauthorizedException ex) {

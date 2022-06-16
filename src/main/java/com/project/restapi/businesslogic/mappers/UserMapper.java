@@ -1,9 +1,9 @@
 package com.project.restapi.businesslogic.mappers;
 
 import com.project.restapi.dataaccesslayer.entities.User;
-import com.project.restapi.api.models.UserCreateModel;
-import com.project.restapi.api.models.UserResponseModel;
-import com.project.restapi.api.models.UserUpdateModel;
+import com.project.restapi.api.models.user.UserCreateModel;
+import com.project.restapi.api.models.user.UserResponseModel;
+import com.project.restapi.api.models.user.UserUpdateModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

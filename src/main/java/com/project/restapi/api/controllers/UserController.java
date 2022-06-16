@@ -1,9 +1,9 @@
 package com.project.restapi.api.controllers;
 
-import com.project.restapi.api.models.UserCreateModel;
-import com.project.restapi.api.models.UserResponseModel;
-import com.project.restapi.api.models.UserUpdateModel;
-import com.project.restapi.api.models.UserUpdatePasswordModel;
+import com.project.restapi.api.models.user.UserCreateModel;
+import com.project.restapi.api.models.user.UserResponseModel;
+import com.project.restapi.api.models.user.UserUpdateModel;
+import com.project.restapi.api.models.user.UserUpdatePasswordModel;
 import com.project.restapi.businesslogic.mappers.UserMapper;
 import com.project.restapi.businesslogic.services.interfaces.IUserService;
 import org.springframework.http.HttpStatus;

@@ -1,8 +1,8 @@
 package com.project.restapi.businesslogic.services.interfaces;
 
-import com.project.restapi.api.models.UserCreateModel;
-import com.project.restapi.api.models.UserResponseModel;
-import com.project.restapi.api.models.UserUpdateModel;
+import com.project.restapi.api.models.user.UserCreateModel;
+import com.project.restapi.api.models.user.UserResponseModel;
+import com.project.restapi.api.models.user.UserUpdateModel;
 
 import java.util.List;
 
