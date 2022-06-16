@@ -5,13 +5,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
+public class User extends EntityBase{
     @Column(name = "first_name")
     private String firstName;
 
@@ -36,12 +30,8 @@ public class User {
     @Column(name = "registration_time")
     private Instant registrationTime;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public User() {
+        super();
     }
 
     public String getFirstName() {

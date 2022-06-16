@@ -1,18 +1,21 @@
 package com.project.api.businesslogiclayer.services;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.project.api.businesslogiclayer.exceptions.BadRequestException;
+import com.project.api.businesslogiclayer.exceptions.ResourceNotFoundException;
+import com.project.api.businesslogiclayer.common.PasswordHelper;
+import com.project.api.businesslogiclayer.exceptions.UnauthorizedException;
 import com.project.api.businesslogiclayer.mappers.UserMapper;
 import com.project.api.apilayer.models.UserCreateModel;
 import com.project.api.apilayer.models.UserResponseModel;
 import com.project.api.apilayer.models.UserUpdateModel;
 import com.project.api.businesslogiclayer.services.interfaces.IUserService;
 import com.project.api.dataaccesslayer.entities.User;
-import com.project.api.dataaccesslayer.repositories.IUserRepository;
+import com.project.api.dataaccesslayer.repositories.UserRepository;
+import de.mobiuscode.nameof.Name;
+import javassist.tools.web.BadHttpRequest;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -20,18 +23,18 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements IUserService
 {
-    private final IUserRepository IUserRepository;
+    private final UserRepository repository;
     private final UserMapper mapper;
 
-    public UserService(IUserRepository userRepository, UserMapper mapper)
+    public UserService(UserRepository userRepository, UserMapper mapper)
     {
-        this.IUserRepository = userRepository;
+        this.repository = userRepository;
         this.mapper = mapper;
     }
 
     public List<UserResponseModel> GetUsers()
     {
-        return IUserRepository.findAll()
+        return repository.findAll()
                 .stream()
                 .map(mapper::MapToResponseModel)
                 .collect(Collectors.toList());
@@ -39,32 +42,52 @@ public class UserService implements IUserService
 
     public UserResponseModel GetUser(long userId)
     {
-        return mapper.MapToResponseModel(IUserRepository.findById(userId).orElseThrow(() -> new RuntimeException(String.format("User with ID %d not exist.", userId))));
+        var userToFind = repository.findById(userId).orElseThrow(()
+                -> new ResourceNotFoundException(User.class.getSimpleName(), Name.of(User.class, User::getId), userId));
+        return mapper.MapToResponseModel(userToFind);
     }
 
     public void CreateUser(UserCreateModel userModel)
     {
-        User userToCreate = mapper.MapToEntity(userModel);
+        var userToCreate = mapper.MapToEntity(userModel);
         userToCreate.setNormalizedEmail(userModel.getEmail().toUpperCase(Locale.ROOT));
         userToCreate.setNormalizedUserName(userModel.getUsername().toUpperCase(Locale.ROOT));
         userToCreate.setRegistrationTime(Instant.now());
-        userToCreate.setPasswordHash(BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray()));
-        IUserRepository.save(userToCreate);
+        userToCreate.setPasswordHash(PasswordHelper.HashPassword(userModel.getPassword()));
+        repository.save(userToCreate);
     }
 
     public void UpdateUser(long userId, UserUpdateModel userModel)
     {
-        var user = IUserRepository.findById(userId).orElseThrow(() -> new RuntimeException(String.format("User1 with ID %d not exist.", userId)));
+        var user = repository.findById(userId).orElseThrow(()
+                -> new ResourceNotFoundException(User.class.getSimpleName(), Name.of(User.class, User::getId), userId));
 
-        user.setFirstName(userModel.getFirstName());
-        user.setLastName(userModel.getLastName());
-        user.setUsername(userModel.getUsername());
+            user.setFirstName(userModel.getFirstName());
+            user.setLastName(userModel.getLastName());
+            user.setUsername(userModel.getUsername());
 
-        IUserRepository.save(user);
+        repository.save(user);
+    }
+
+
+    public void UpdateUserPassword(long userId, String oldPassword, String newPassword, String newPasswordCheck) {
+        if (newPassword.equals(newPasswordCheck)){
+            var user = repository.findById(userId).orElseThrow(()
+                    -> new ResourceNotFoundException(User.class.getSimpleName(), Name.of(User.class, User::getId), userId));
+            if (PasswordHelper.VerifyPassword(oldPassword, user.getPasswordHash())){
+                user.setPasswordHash(PasswordHelper.HashPassword(newPassword));
+            }
+            else {
+                throw new UnauthorizedException();
+            }
+        }
+        else {
+            throw new BadRequestException("New password in both fields should be equal");
+        }
     }
 
     public void DeleteUser(long userId)
     {
-        IUserRepository.deleteById(userId);
+        repository.deleteById(userId);
     }
 }

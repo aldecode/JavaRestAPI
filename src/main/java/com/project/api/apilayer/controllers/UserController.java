@@ -3,11 +3,14 @@ package com.project.api.apilayer.controllers;
 import com.project.api.apilayer.models.UserCreateModel;
 import com.project.api.apilayer.models.UserResponseModel;
 import com.project.api.apilayer.models.UserUpdateModel;
+import com.project.api.apilayer.models.UserUpdatePasswordModel;
 import com.project.api.businesslogiclayer.mappers.UserMapper;
 import com.project.api.businesslogiclayer.services.interfaces.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/user")
@@ -33,16 +36,22 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> CreateUser(@RequestBody UserCreateModel userModel)
+    public ResponseEntity<Void> CreateUser(@Valid @RequestBody UserCreateModel userModel)
     {
         userService.CreateUser(userModel);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<Void> UpdateUser(@PathVariable int userId, @RequestBody UserUpdateModel userModel)
+    public ResponseEntity<Void> UpdateUser(@PathVariable int userId, @Valid @RequestBody UserUpdateModel userModel)
     {
         userService.UpdateUser(userId, userModel);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Void> UpdateUserPassword(@PathVariable int userId, @Valid @RequestBody UserUpdatePasswordModel userModel){
+        userService.UpdateUserPassword(userId, userModel.getOldPassword(), userModel.getNewPassword(), userModel.getNewPasswordCheck());
         return ResponseEntity.noContent().build();
     }
 
