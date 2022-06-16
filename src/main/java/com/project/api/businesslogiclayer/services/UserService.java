@@ -76,6 +76,7 @@ public class UserService implements IUserService
                     -> new ResourceNotFoundException(User.class.getSimpleName(), Name.of(User.class, User::getId), userId));
             if (PasswordHelper.VerifyPassword(oldPassword, user.getPasswordHash())){
                 user.setPasswordHash(PasswordHelper.HashPassword(newPassword));
+                repository.save(user);
             }
             else {
                 throw new UnauthorizedException();
