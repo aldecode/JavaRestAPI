@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private final String HEADER = "Authorization";
@@ -24,17 +26,22 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        if (checkJWTToken(request, response)) {
-            Claims claims = validateToken(request);
-            if (claims.get("authorities") != null) {
-                setUpSpringAuthentication(claims);
-            } else {
+        try {
+            if (checkJWTToken(request, response)) {
+                Claims claims = validateToken(request);
+                if (claims.get("authorities") != null) {
+                    setUpSpringAuthentication(claims);
+                } else {
+                    SecurityContextHolder.clearContext();
+                }
+            }else {
                 SecurityContextHolder.clearContext();
             }
-        } else {
-            SecurityContextHolder.clearContext();
+            chain.doFilter(request, response);
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         }
-        chain.doFilter(request, response);
     }
 
     private Claims validateToken(HttpServletRequest request) {

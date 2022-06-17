@@ -11,10 +11,14 @@ import com.project.restapi.dataaccesslayer.repositories.UserRepository;
 import de.mobiuscode.nameof.Name;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.TextCodec;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,14 +63,21 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     private String GenerateJwtToken(String login) {
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+                .commaSeparatedStringToAuthorityList("ROLE_USER");
+
         return Jwts.builder()
-                .setId("id00")
+                .setId("id")
                 .setSubject(login)
+                .claim("authorities",
+                        grantedAuthorities.stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .collect(Collectors.toList()))
+                .setAudience(audience)
                 .setIssuer(issuer)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setAudience(audience)
                 .setExpiration(new Date(System.currentTimeMillis() + DaysToMillis(expirationInDays)))
-                .signWith(SignatureAlgorithm.HS512, secret.getBytes())
+                .signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(secret))
                 .compact();
     }
     private Integer DaysToMillis(Integer daysCount){
