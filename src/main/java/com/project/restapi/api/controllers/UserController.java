@@ -1,19 +1,19 @@
 package com.project.restapi.api.controllers;
 
-import com.project.restapi.api.models.user.UserCreateModel;
-import com.project.restapi.api.models.user.UserResponseModel;
-import com.project.restapi.api.models.user.UserUpdateModel;
-import com.project.restapi.api.models.user.UserUpdatePasswordModel;
+import com.project.restapi.api.models.user.*;
 import com.project.restapi.businesslogic.mappers.UserMapper;
 import com.project.restapi.businesslogic.services.interfaces.IUserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.web.servlet.SecurityMarker;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/user")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private final IUserService userService;
     private final UserMapper mapper;

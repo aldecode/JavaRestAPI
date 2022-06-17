@@ -1,13 +1,13 @@
 package com.project.restapi.businesslogic.common;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class PasswordHelper {
     public static String HashPassword(String password){
-        return BCrypt.withDefaults().hashToString(12, password.toCharArray());
+        return new BCryptPasswordEncoder().encode(password);
     }
 
     public static boolean VerifyPassword(String password, String hashedPassword){
-        return BCrypt.verifyer().verify(password.toCharArray(), hashedPassword.toCharArray()).verified;
+        return new BCryptPasswordEncoder().matches(password, hashedPassword);
     }
 }

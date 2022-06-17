@@ -4,6 +4,9 @@ import com.project.restapi.api.models.ErrorResponseModel;
 import com.project.restapi.businesslogic.exceptions.BadRequestException;
 import com.project.restapi.businesslogic.exceptions.ResourceNotFoundException;
 import com.project.restapi.businesslogic.exceptions.UnauthorizedException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,6 +18,21 @@ import java.time.Instant;
 @ControllerAdvice
 public class ExceptionHandlingAdvice {
     private final Clock clock = Clock.systemDefaultZone();
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponseModel> handleException(ExpiredJwtException ex) {
+        return handleException(ex, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<ErrorResponseModel> handleException(UnsupportedJwtException ex) {
+        return handleException(ex, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ErrorResponseModel> handleException(MalformedJwtException ex) {
+        return handleException(ex, HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseModel> handleException(ResourceNotFoundException ex) {

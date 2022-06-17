@@ -31,6 +31,7 @@ public class UserService implements IUserService
         this.mapper = mapper;
     }
 
+    @Override
     public List<UserResponseModel> GetUsers()
     {
         return repository.findAll()
@@ -39,6 +40,7 @@ public class UserService implements IUserService
                 .collect(Collectors.toList());
     }
 
+    @Override
     public UserResponseModel GetUser(long userId)
     {
         var userToFind = repository.findById(userId).orElseThrow(()
@@ -46,6 +48,7 @@ public class UserService implements IUserService
         return mapper.MapToResponseModel(userToFind);
     }
 
+    @Override
     public void CreateUser(UserCreateModel userModel)
     {
         var userToCreate = mapper.MapToEntity(userModel);
@@ -56,6 +59,7 @@ public class UserService implements IUserService
         repository.save(userToCreate);
     }
 
+    @Override
     public void UpdateUser(long userId, UserUpdateModel userModel)
     {
         var user = repository.findById(userId).orElseThrow(()
@@ -69,6 +73,7 @@ public class UserService implements IUserService
     }
 
 
+    @Override
     public void UpdateUserPassword(long userId, String oldPassword, String newPassword, String newPasswordCheck) {
         if (newPassword.equals(newPasswordCheck)){
             var user = repository.findById(userId).orElseThrow(()
@@ -86,6 +91,7 @@ public class UserService implements IUserService
         }
     }
 
+    @Override
     public void DeleteUser(long userId)
     {
         repository.deleteById(userId);
