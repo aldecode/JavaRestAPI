@@ -5,7 +5,6 @@ import com.project.restapi.businesslogic.common.PasswordHelper;
 import com.project.restapi.businesslogic.exceptions.ResourceNotFoundException;
 import com.project.restapi.businesslogic.exceptions.UnauthorizedException;
 import com.project.restapi.businesslogic.services.interfaces.IAuthenticationService;
-import com.project.restapi.businesslogic.services.interfaces.IUserService;
 import com.project.restapi.dataaccesslayer.entities.User;
 import com.project.restapi.dataaccesslayer.repositories.UserRepository;
 import de.mobiuscode.nameof.Name;

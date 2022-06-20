@@ -2,7 +2,6 @@ package com.project.restapi.api.filters;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.TextCodec;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +21,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private final String HEADER = "Authorization";
     private final String PREFIX = "Bearer ";
+    @SuppressWarnings("SpellCheckingInspection")
     private final String SECRET = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
 
     @Override
